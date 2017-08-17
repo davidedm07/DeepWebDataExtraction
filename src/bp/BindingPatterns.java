@@ -23,9 +23,12 @@ public class BindingPatterns extends TestCase {
 
 		// String sourcesString = "s1(A-b,B);s2(A,B-b)";
 		// String queryString = "q(X):-s1(X,Y),s2(X,Y).";
+		
+		 String sourcesString = "s1(TitleAlbum-b,Artist-b,Description,TitleSong);s2(Artist-b,TitleSong-b,Links)";
+		 String queryString = "q(W):-s1(titleAlbum,artist,Y,Z),s2(Z,artist,W).";
 
-		String sourcesString = "s1(A-b,B);s2(A,B-b)";
-		String queryString = "q(X):-s1(a,X),s1(b,X).";
+		//String sourcesString = "s1(A-b,B);s2(A,B-b)";
+		//String queryString = "q(X):-s1(a,X),s1(b,X).";
 
 		// String sourcesString = "s1(A-b);s2(A);s3(A)";
 		// String queryString = "q(X):-s1(X).";

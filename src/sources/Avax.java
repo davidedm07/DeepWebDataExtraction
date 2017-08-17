@@ -121,6 +121,18 @@ public class Avax extends Source {
 
 		return tracks;
 	}
+	
+	public String getDescription(com.jaunt.Document albumDetails) {
+		String description = "";
+		try {
+			description = albumDetails.findFirst("<blockquote>").getText();
+		} catch (NotFound e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println(description);
+		return description;
+	}
 
 
 }

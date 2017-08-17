@@ -8,8 +8,14 @@ import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.SocketAddress;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+
 
 public class InternetArchive extends Source{
 
@@ -65,12 +71,27 @@ public class InternetArchive extends Source{
 				tmp.append(line);
 			} 
 			doc = Jsoup.parse(String.valueOf(tmp));
+			System.out.println(getLinksTrack(doc));
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("Connection failed to url " + this.getUrl()+ this.searchForm + query);
 		}
 
 		return doc;	
+	}
+	
+	public String getLinksTrack(org.jsoup.nodes.Document doc) {
+		org.jsoup.nodes.Document columns = Jsoup.parse(doc.getElementsByClass("columns-items").html());
+		Elements links = columns.select("a[href]");
+		String result = "";
+		for (Element link : links) {
+			String songLink=link.attr("href");
+			if (songLink.contains("details"))
+				result +=super.getUrl()+songLink + "\n";
+		}
+		return result;
+		
 	}
 }
 

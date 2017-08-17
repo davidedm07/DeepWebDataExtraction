@@ -1,6 +1,7 @@
 package connection;
 
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 
 import sources.*;
 
@@ -10,17 +11,23 @@ import sources.*;
 public class DeepWebExtraction {
 
 	public static void main(String[] args) {
-		InternetArchive source1 = new InternetArchive("https://archive.org/");
+		InternetArchive source1 = new InternetArchive("https://archive.org");
 		Avax source2 = new Avax("http://avaxhome5lcpcok5.onion/");
 		try { 
-			//source1.printQueryResult("nirvana");
-			com.jaunt.Document albumDetails = source2.applyQuery("linkin park hybrid theory");
-			source2.getAlbumDetails(albumDetails);
+			String artist = "linkin park";
+			String albumName = "meteora";
+			com.jaunt.Document album = source2.applyQuery(artist + " " + albumName);
+			com.jaunt.Document albumDetails = source2.getAlbumDetails(album);
+			source2.getDescription(albumDetails);
+			ArrayList<String> albumTracklist = (ArrayList<String>) source2.getTracklist(albumDetails);
+			System.out.println(albumTracklist.toString());
+			for(String track:albumTracklist)
+				source1.applyQuery(artist + " " + track);
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
+
+
 	}
 }
