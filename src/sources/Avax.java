@@ -78,7 +78,7 @@ public class Avax extends Source {
 			String albumDetailsLink = details.getParent().getAt("href");
 			userAgent.visit(albumDetailsLink);
 			answer = userAgent.doc;
-			System.out.println(getTracklist(answer));
+			//System.out.println(getTracklist(answer));
 		} catch (NotFound e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -90,10 +90,15 @@ public class Avax extends Source {
 	}
 	// CLEAN TRACKS REGEX [^0-9][^\. ][a-z]+[^0-9\(]
 	public List<String> getTracklist(com.jaunt.Document albumDetails) {
-		Element tracklist;
+		Element tracklist = null;
 		List<String> tracks = new ArrayList<String>();
 		try {
-			tracklist = albumDetails.findFirst("<b>Tracklist");
+			for (Element x:albumDetails.findEvery("<b>")) {
+				//System.out.println(x.getText());
+				if (x.getText().contains("Track") || x.getText().contains("track"))
+					tracklist = x;
+			}
+			//tracklist = albumDetails.findFirst("<b>Tracklist");
 			Element tmp = tracklist.nextSiblingElement();
 			Element cdElement = tmp.nextSiblingElement().nextSiblingElement();
 			ArrayList<String> listTracks = null;
@@ -103,10 +108,19 @@ public class Avax extends Source {
 				tmp = tracklist;
 				listTracks = new ArrayList<String>();
 				String rawText = tmp.getParent().getText();
-				listTracks = new ArrayList<String>(Arrays.asList(rawText.trim().split("[0-9][0-9] - ")));				
+				// [0-9][0-9](.)*( -)*
+				//System.out.println(rawText);
+				listTracks = new ArrayList<String>(Arrays.asList(rawText.trim().split("[0-9][0-9] -")));
 			}
-			Pattern p = Pattern.compile("[A-Za-z_]+([a-zA-Z_0-9 ])*");
+			// PATTERN FUNZIONANTE PRECEDENTE A-Za-z_]+([a-zA-Z_.0-9' ])*
+			Pattern p = Pattern.compile("[A-Za-z_]+([a-zA-Z_.?!' ])*");
 			Matcher m;
+			m = p.matcher(tracklist.getParent().getText().trim());
+			while(m.find()) {
+				System.out.println(m.group());
+				
+			}
+			/*
 			for(String rawTrack:listTracks)
 				if(!rawTrack.isEmpty() && !rawTrack.equals(" ") && !rawTrack.contains("CD")) {
 					m = p.matcher(rawTrack.trim());
@@ -114,11 +128,12 @@ public class Avax extends Source {
 					String cleanedTrack = m.group(); 
 					tracks.add(cleanedTrack);
 				}
+				*/
 		} catch (NotFound e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		
 		return tracks;
 	}
 	
